@@ -5,6 +5,7 @@ using System.Transactions;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Globalization;
 class Program {
 
     // Main Method
@@ -12,7 +13,7 @@ class Program {
     {
 
         Console.WriteLine("Main Method");
-        string input = "testing this thing";
+        string input = "The saddest aspect of life right now is that science gathers knowledge faster than society gathers wisdom.";
         var encrypt = new MD4();
         encrypt.MD4func(input);
         
@@ -32,60 +33,71 @@ class MD4 {
         {
             bytes.Add(0);
         }
-       int lengtharray = bytes.Count * 8;
+       int lengtharray = bitCount; 
+       Console.WriteLine(lengtharray+ "this is the length");
        string binary = Convert.ToString(lengtharray,2);
+       binary = binary.PadLeft(64, '0');
        Console.WriteLine(binary + "<--------- this is the binary thing");
-        char[] temparray  = binary.ToCharArray();
-        
-        
+       
+       
+       
+      string[]  substrings = new string[8];
+       for(int i = 0; i <8; i++)
+       {
+            substrings[i]  = binary.Substring((8 * i), 8);
+       }
+        int[] intsubstrings = new int[8];
+        for(int i = 0; i <8; i++)
+       {
+            intsubstrings[i] = Convert.ToInt32(substrings[i],2);
+            Console.WriteLine(intsubstrings[i]);
+       }
+        Array.Sort(intsubstrings);
+        Array.Reverse(intsubstrings);
 
-        for(int i = 8; i <  temparray.Length; i ++)
+        for(int i = 0; i <8; i++)
         {
-            if(temparray[i] == '0')
-            {
-                bytes.Add(0);
-                
-            }
-            else
-            {
-                bytes.Add(1);
-                
-            }
-
-           
-           
+            var temp = intsubstrings[i];
+            var stringtemp = Convert.ToString(intsubstrings[i]);
+            stringtemp = stringtemp.PadLeft(8, '0');
+            intsubstrings[i] = Convert.ToInt32(stringtemp);
         }
 
-         for(int i = 0; i <  7; i ++)
+         for(int i = 0; i < intsubstrings.Length; i ++)
         {
-           
-           if(temparray[i] == '0')
-            {
-                bytes.Add(0);
-                
-            }
-            else
-            {
-                bytes.Add(1);
-                
-            }
+            bytes.Add(Convert.ToByte(intsubstrings[i]));
         }
+
         
-       int total = 0;
+       
+
+       
+       
+   
+       
+        
+       
+       
+   
+        
+       
        for(int i = 0; i < bytes.Count; i ++)
        {
         
         Console.Write(bytes[i]);
-        total =total +1;
+        
          }
+        
         
 
 
 
-       string word_A = "0x67452301";
-        string word_B = "0xefcdab89";
-       string  word_C = "0x98badcfe";
-        string word_D = "0x10325476";
+        uint word_A = 0x67452301;
+        uint word_B = 0xefcdab89;
+        uint  word_C = 0x98badcfe;
+        uint word_D = 0x10325476;
+    
+
     }
                         
 
@@ -100,22 +112,3 @@ class MD4 {
         
 
 
-//byte[] bytes = Encoding.ASCII.GetBytes(input);
-        //foreach ( byte b in bytes)
-        //{
-           // Console.Write(b);        }
-           // int[] PADDING = [
-                     //   128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                     //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                     //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                      //  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
-      //  int messagelength = input.Length;
-       // int index = messagelength % 64;
-       // if(index < 56)
-       // {
-          //  int temp = 56 - index;
-           // for(int i = bytes.Length; i < bytes.Length + temp; i++)
-           // {
-           //     bytes[i] = Convert.ToByte(PADDING[i]);
-           //     Console.Write(bytes[i]);
-           // }
